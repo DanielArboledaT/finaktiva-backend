@@ -86,16 +86,21 @@ public class UsuarioService {
 
     }
 
-    public void actualizarUsuario(UsuarioEntity usuario) {
+    public void actualizarUsuario(NuevoUsuario usuario) {
 
-        usuarioRepository.actualizarUsuario(usuario.getNombre(), usuario.getCedula(),usuario.getEmail(),
-                passwordEncoder.encode(usuario.getPassword()),usuario.getUsername(), usuario.getIdusuario());
+        usuarioRepository.actualizarUsuario(usuario.getNombre(), usuario.getEmail(),
+                passwordEncoder.encode(usuario.getPassword()), usuario.getUsername(), usuario.getIdusuario());
 
-        List<Integer> roles = usuario.getRoles().stream()
-                .map(rol -> rol.getIdrole()).collect(Collectors.toList());
+        Integer rol;
+
+        if (usuario.getRoles().contains("admin")) {
+            rol = 1;
+        } else {
+            rol = 2;
+        }
 
 
-        usuarioRolRepository.actualizarUsuarioRol(roles.get(0), usuario.getIdusuario());
+        usuarioRolRepository.actualizarUsuarioRol(rol, usuario.getIdusuario());
 
     }
 

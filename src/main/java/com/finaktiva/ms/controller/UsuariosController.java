@@ -64,7 +64,7 @@ public class UsuariosController {
     }
 
     @PreAuthorize("hasAuthority('ROL_ADMIN')")
-    @DeleteMapping("/eliminarUsuario")
+    @PostMapping("/eliminarUsuario")
     public ResponseEntity<?> eliminarUsuario(@RequestBody UsuarioEntity usuario) {
 
         try {
@@ -82,7 +82,7 @@ public class UsuariosController {
 
     @PreAuthorize("hasAuthority('ROL_ADMIN')")
     @PostMapping("/actualizarUsuario")
-    public ResponseEntity<?> actualizarUsuario(@RequestBody UsuarioEntity nuevoUsuario) {
+    public ResponseEntity<?> actualizarUsuario(@RequestBody NuevoUsuario nuevoUsuario) {
 
         try {
 

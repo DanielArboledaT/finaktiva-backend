@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class NuevoUsuario {
 
+    private Integer idusuario;
+
     @NotBlank
     private String nombre;
     @NotBlank
@@ -86,5 +88,13 @@ public class NuevoUsuario {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public Integer getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(Integer idusuario) {
+        this.idusuario = idusuario;
     }
 }
