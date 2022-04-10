@@ -40,7 +40,7 @@ public class UsuarioEntity implements Serializable {
     @Column()
     private String username;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "usuario_rol",
             joinColumns = @JoinColumn(name = "idusuario"),
             inverseJoinColumns = @JoinColumn(name = "idrol"))

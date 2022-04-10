@@ -14,6 +14,7 @@ import com.finaktiva.ms.util.Mensajes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,49 +34,10 @@ import java.util.Set;
 public class AuthController {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UsuarioService usuarioService;
-
-    @Autowired
-    RolService rolService;
-
-    @Autowired
     JwtProvider jwtProvider;
-
-    @PostMapping("/nuvoUsuario")
-    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult) {
-
-        if(bindingResult.hasErrors()) {
-            return new ResponseEntity(new Mensajes("Campos incorrectos"), HttpStatus.BAD_REQUEST);
-        }
-        if(usuarioService.existsByNombreUsuario(nuevoUsuario.getUsername())) {
-            return new ResponseEntity(new Mensajes("Nombre usuario ya existe"), HttpStatus.BAD_REQUEST);
-        }
-        if(usuarioService.existsByNombreEmail(nuevoUsuario.getEmail())) {
-            return new ResponseEntity(new Mensajes("Email ya existe"), HttpStatus.BAD_REQUEST);
-        }
-
-        UsuarioEntity usuario = new UsuarioEntity(nuevoUsuario.getNombre(), nuevoUsuario.getEmail(),
-                passwordEncoder.encode(nuevoUsuario.getPassword()), nuevoUsuario.getUsername());
-
-        Set<RolEntity> roles = new HashSet<>();
-        roles.add(rolService.getByRolNombre(RolNombre.ROL_OPERATIVO).get());
-
-        if (nuevoUsuario.getRoles().contains("Admin")) {
-            roles.add(rolService.getByRolNombre(RolNombre.ROL_ADMIN).get());
-        }
-
-        usuario.setRoles(roles);
-        usuarioService.guardar(usuario);
-
-        return new ResponseEntity<>(new Mensajes("Usuario guardado"), HttpStatus.CREATED);
-
-    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) {
