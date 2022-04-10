@@ -1,14 +1,25 @@
 package com.finaktiva.ms.service;
 
 
+import com.finaktiva.ms.entity.RolEntity;
 import com.finaktiva.ms.entity.UsuarioEntity;
+import com.finaktiva.ms.entity.UsuarioRolEntity;
 import com.finaktiva.ms.repository.IUsuarioRepository;
+import com.finaktiva.ms.repository.IUsuarioRolRepository;
+import com.finaktiva.ms.security.dto.NuevoUsuario;
+import com.finaktiva.ms.security.enums.RolNombre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -16,6 +27,15 @@ public class UsuarioService {
 
     @Autowired
     private IUsuarioRepository usuarioRepository;
+
+    @Autowired
+    private IUsuarioRolRepository usuarioRolRepository;
+
+    @Autowired
+    RolService rolService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public List<UsuarioEntity> obtenerUsuarios() {
 
@@ -41,9 +61,41 @@ public class UsuarioService {
 
     }
 
-    public void guardar(UsuarioEntity usuario) {
+    public void guardar(NuevoUsuario usuario) {
 
-        usuarioRepository.save(usuario);
+        UsuarioEntity usr = new UsuarioEntity(usuario.getNombre(), usuario.getEmail(),
+                passwordEncoder.encode(usuario.getPassword()), usuario.getUsername());
+
+        Set<RolEntity> roles = new HashSet<>();
+
+        if (usuario.getRoles().contains("admin")) {
+            roles.add(rolService.getByRolNombre(RolNombre.ROL_ADMIN).get());
+        } else {
+            roles.add(rolService.getByRolNombre(RolNombre.ROL_OPERATIVO).get());
+        }
+
+        usr.setRoles(roles);
+
+        usuarioRepository.save(usr);
+
+    }
+
+    public void eliminarUsuario(UsuarioEntity usuario) {
+
+        usuarioRepository.deleteById(usuario.getIdusuario());
+
+    }
+
+    public void actualizarUsuario(UsuarioEntity usuario) {
+
+        usuarioRepository.actualizarUsuario(usuario.getNombre(), usuario.getCedula(),usuario.getEmail(),
+                passwordEncoder.encode(usuario.getPassword()),usuario.getUsername(), usuario.getIdusuario());
+
+        List<Integer> roles = usuario.getRoles().stream()
+                .map(rol -> rol.getIdrole()).collect(Collectors.toList());
+
+
+        usuarioRolRepository.actualizarUsuarioRol(roles.get(0), usuario.getIdusuario());
 
     }
 

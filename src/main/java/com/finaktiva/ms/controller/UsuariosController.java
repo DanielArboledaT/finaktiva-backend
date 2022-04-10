@@ -57,20 +57,43 @@ public class UsuariosController {
             return new ResponseEntity(new Mensajes("Email ya existe"), HttpStatus.BAD_REQUEST);
         }
 
-        UsuarioEntity usuario = new UsuarioEntity(nuevoUsuario.getNombre(), nuevoUsuario.getEmail(),
-                passwordEncoder.encode(nuevoUsuario.getPassword()), nuevoUsuario.getUsername());
+        usuarioService.guardar(nuevoUsuario);
 
-        Set<RolEntity> roles = new HashSet<>();
-        roles.add(rolService.getByRolNombre(RolNombre.ROL_OPERATIVO).get());
+        return new ResponseEntity<>(new Mensajes("Usuario guardado exitosamente"), HttpStatus.CREATED);
 
-        if (nuevoUsuario.getRoles().contains("Admin")) {
-            roles.add(rolService.getByRolNombre(RolNombre.ROL_ADMIN).get());
+    }
+
+    @PreAuthorize("hasAuthority('ROL_ADMIN')")
+    @DeleteMapping("/eliminarUsuario")
+    public ResponseEntity<?> eliminarUsuario(@RequestBody UsuarioEntity usuario) {
+
+        try {
+
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            usuarioService.eliminarUsuario(usuario);
+            return new ResponseEntity<>(new Mensajes("Usuario eliminado exitosamente"), HttpStatus.OK);
+
+        } catch (Exception e) {
+            String mensaje = "Error eliminando el usuario" + e;
+            return new ResponseEntity<>(new Mensajes(mensaje), HttpStatus.CONFLICT);
         }
 
-        usuario.setRoles(roles);
-        usuarioService.guardar(usuario);
+    }
 
-        return new ResponseEntity<>(new Mensajes("Usuario guardado"), HttpStatus.CREATED);
+    @PreAuthorize("hasAuthority('ROL_ADMIN')")
+    @PostMapping("/actualizarUsuario")
+    public ResponseEntity<?> actualizarUsuario(@RequestBody UsuarioEntity nuevoUsuario) {
+
+        try {
+
+            usuarioService.actualizarUsuario(nuevoUsuario);
+
+            return new ResponseEntity<>(new Mensajes("Usuario actualizado exitosamente"), HttpStatus.OK);
+
+        } catch (Exception e) {
+            String mensaje = "Error actualizando el usuario" + e;
+            return new ResponseEntity<>(new Mensajes(mensaje), HttpStatus.CONFLICT);
+        }
 
     }
 
