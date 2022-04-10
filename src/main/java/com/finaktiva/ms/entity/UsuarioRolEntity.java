@@ -10,12 +10,15 @@ public class UsuarioRolEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id_rolusuario")
     private Integer idRolUsuario;
 
     @NotNull
+    @Column(name = "idrol")
     private Integer idrol;
 
     @NotNull
+    @Column(name = "idusuario")
     private Integer idUsuario;
 
     public Integer getIdRolUsuario() {
