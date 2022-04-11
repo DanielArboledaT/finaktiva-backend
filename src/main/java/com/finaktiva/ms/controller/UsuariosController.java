@@ -65,12 +65,10 @@ public class UsuariosController {
 
     @PreAuthorize("hasAuthority('ROL_ADMIN')")
     @PostMapping("/eliminarUsuario")
-    public ResponseEntity<?> eliminarUsuario(@RequestBody UsuarioEntity usuario) {
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Integer idusuario) {
 
         try {
-
-            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-            usuarioService.eliminarUsuario(usuario);
+            usuarioService.eliminarUsuario(idusuario);
             return new ResponseEntity<>(new Mensajes("Usuario eliminado exitosamente"), HttpStatus.OK);
 
         } catch (Exception e) {

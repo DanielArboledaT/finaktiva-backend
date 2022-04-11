@@ -80,9 +80,9 @@ public class UsuarioService {
 
     }
 
-    public void eliminarUsuario(UsuarioEntity usuario) {
+    public void eliminarUsuario(Integer idUsuario) {
 
-        usuarioRepository.deleteById(usuario.getIdusuario());
+        usuarioRepository.deleteById(idUsuario);
 
     }
 
