@@ -1,7 +1,6 @@
 package com.finaktiva.ms.entity;
 
 import com.finaktiva.ms.security.enums.RolNombre;
-import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
