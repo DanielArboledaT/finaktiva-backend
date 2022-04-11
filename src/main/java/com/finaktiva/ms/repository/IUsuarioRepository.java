@@ -16,6 +16,7 @@ public interface IUsuarioRepository extends JpaRepository<UsuarioEntity, Integer
     Boolean existsByEmail(String email);
     Boolean existsByUsername(String username);
 
+
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE bmc5uciucq7njjeum5ju.usuarios "
             + "SET "
