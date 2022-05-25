@@ -1,10 +1,8 @@
 package com.finaktiva.ms.controller;
 
 
-import com.finaktiva.ms.entity.RolEntity;
 import com.finaktiva.ms.entity.UsuarioEntity;
 import com.finaktiva.ms.security.dto.NuevoUsuario;
-import com.finaktiva.ms.security.enums.RolNombre;
 import com.finaktiva.ms.service.RolService;
 import com.finaktiva.ms.service.UsuarioService;
 import com.finaktiva.ms.util.Mensajes;
@@ -17,9 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/finaktiva")
